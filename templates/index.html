@@ -1,0 +1,1518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nexus Mall Management System | DBMS Mini Project</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased flex h-screen overflow-hidden">
+
+  <!-- ==================================================================== -->
+  <!-- SIDEBAR NAVIGATION -->
+  <!-- ==================================================================== -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col flex-shrink-0 z-20 shadow-xl border-r border-slate-800">
+    <!-- Brand Header -->
+    <div class="p-5 border-b border-slate-800 flex items-center space-x-3 bg-slate-950/40">
+      <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-lg shadow-brand-500/30">
+        <i class="fa-solid fa-store text-lg"></i>
+      </div>
+      <div>
+        <h1 class="font-bold text-white tracking-wide text-base leading-tight">NEXUS MALL</h1>
+        <p class="text-xs text-brand-400 font-medium">DBMS Mini Project</p>
+      </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav class="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+      <div class="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">Core Operations</div>
+
+      <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn active flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-chart-pie w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>Dashboard</span>
+      </button>
+
+      <button onclick="switchTab('pos')" id="nav-pos" class="nav-btn flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-cash-register w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>POS Checkout</span>
+        <span class="ml-auto text-[10px] bg-emerald-500/20 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold">SALE</span>
+      </button>
+
+      <button onclick="switchTab('shops')" id="nav-shops" class="nav-btn flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-shop w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>Shops & Leases</span>
+      </button>
+
+      <button onclick="switchTab('products')" id="nav-products" class="nav-btn flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-boxes-stacked w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>Inventory & Offers</span>
+      </button>
+
+      <button onclick="switchTab('customers')" id="nav-customers" class="nav-btn flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-users w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>Customer & Loyalty</span>
+      </button>
+
+      <button onclick="switchTab('parking')" id="nav-parking" class="nav-btn flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-square-parking w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>Smart Parking</span>
+        <span id="nav-parking-badge" class="ml-auto text-[10px] bg-indigo-500/20 text-indigo-400 px-1.5 py-0.5 rounded font-mono">B1-B3</span>
+      </button>
+
+      <button onclick="switchTab('events')" id="nav-events" class="nav-btn flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-calendar-star w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>Mall Events</span>
+      </button>
+
+      <button onclick="switchTab('support')" id="nav-support" class="nav-btn flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-headset w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>Complaints & Ops</span>
+      </button>
+
+      <div class="px-3 pt-4 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-400">DBMS Evaluation</div>
+
+      <button onclick="switchTab('analytics')" id="nav-analytics" class="nav-btn flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-chart-column w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>10 DBMS Reports</span>
+        <span class="ml-auto text-[10px] bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded font-mono font-bold">VIVA</span>
+      </button>
+
+      <button onclick="switchTab('sql-studio')" id="nav-sql-studio" class="nav-btn flex items-center w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-all group">
+        <i class="fa-solid fa-database w-6 text-slate-400 group-hover:text-brand-400"></i>
+        <span>SQL Console & ER</span>
+      </button>
+    </nav>
+
+    <!-- Footer System Status -->
+    <div class="p-3 border-t border-slate-800 bg-slate-950/60">
+      <div class="bg-slate-800/80 rounded-lg p-2.5 text-xs text-slate-400">
+        <div class="flex items-center space-x-2 mb-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 live-pulse"></span>
+          <span class="text-slate-200 font-semibold">SQLite 3 + ANSI SQL</span>
+        </div>
+        <p class="text-[11px] text-slate-400 leading-relaxed">Triggers: Active | Foreign Keys: ON</p>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ==================================================================== -->
+  <!-- MAIN CONTENT CONTAINER -->
+  <!-- ==================================================================== -->
+  <main class="flex-1 flex flex-col overflow-hidden">
+    <!-- Top Header -->
+    <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 z-10 shadow-sm flex-shrink-0">
+      <div class="flex items-center space-x-3">
+        <h2 id="page-title" class="text-xl font-bold text-slate-800">Mall Operations Dashboard</h2>
+        <span id="page-subtitle" class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full border border-slate-200">Real-time Data Aggregation</span>
+      </div>
+
+      <div class="flex items-center space-x-2.5">
+        <button onclick="openSqlTracerModal()" class="px-3 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 rounded-lg text-xs font-bold border border-emerald-200 transition flex items-center space-x-1.5 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 live-pulse"></span>
+          <i class="fa-solid fa-code"></i>
+          <span>Live SQL Trace (<span id="sql-log-counter">0</span>)</span>
+        </button>
+        <button onclick="switchTab('pos')" class="px-3 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-1.5">
+          <i class="fa-solid fa-cart-plus"></i>
+          <span>POS Sale</span>
+        </button>
+        <button onclick="openModal('parking-entry-modal')" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-1.5">
+          <i class="fa-solid fa-car-side"></i>
+          <span>Park Car</span>
+        </button>
+        <button onclick="switchTab('sql-studio')" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-brand-700 rounded-lg text-xs font-semibold border border-indigo-200 transition flex items-center space-x-1.5">
+          <i class="fa-solid fa-terminal"></i>
+          <span>SQL Studio</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Scrollable Tab Content Container -->
+    <div id="tab-content-area" class="flex-1 overflow-y-auto p-8 bg-slate-50/60">
+
+      <!-- ============================================================== -->
+      <!-- TAB 1: DASHBOARD -->
+      <!-- ============================================================== -->
+      <section id="tab-dashboard" class="tab-pane space-y-6">
+        <!-- KPI Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          <!-- Card 1: Total Revenue -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Gross Mall Revenue</p>
+                <h3 id="stat-revenue" class="text-2xl font-black text-slate-900 mt-1">$0.00</h3>
+                <p class="text-[11px] text-emerald-600 font-semibold mt-1 flex items-center space-x-1">
+                  <i class="fa-solid fa-arrow-trend-up"></i>
+                  <span id="stat-orders-count">0 purchases recorded</span>
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-sack-dollar"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2: Shops & Leases -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Occupancy & Leases</p>
+                <h3 id="stat-shops" class="text-2xl font-black text-slate-900 mt-1">0 / 0</h3>
+                <p class="text-[11px] text-brand-600 font-semibold mt-1">
+                  Monthly Rent: <span id="stat-rent">$0.00</span>
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-shop-lock"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Parking Status -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Parking Occupancy</p>
+                <h3 id="stat-parking" class="text-2xl font-black text-slate-900 mt-1">0%</h3>
+                <p class="text-[11px] text-slate-500 font-medium mt-1">
+                  <span id="stat-parking-slots" class="font-semibold text-slate-700">0 of 0</span> slots occupied
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-square-parking"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4: Open Issues & Operations -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-xs font-medium text-slate-500 uppercase tracking-wider">Support & Maintenance</p>
+                <h3 id="stat-issues" class="text-2xl font-black text-slate-900 mt-1">0 Issues</h3>
+                <p class="text-[11px] text-amber-600 font-semibold mt-1">
+                  <span id="stat-urgent">0 urgent</span> complaints open
+                </p>
+              </div>
+              <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Summary & Feed Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Recent Transactions Table -->
+          <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <h3 class="font-bold text-slate-800 text-base">Recent Point of Sale Purchases</h3>
+                <p class="text-xs text-slate-500">Live transactions across all mall outlets</p>
+              </div>
+              <button onclick="switchTab('pos')" class="text-xs text-brand-600 hover:text-brand-700 font-semibold">Open POS &rarr;</button>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-sm">
+                <thead>
+                  <tr class="text-xs uppercase text-slate-500 border-b border-slate-100 bg-slate-50/50">
+                    <th class="py-2.5 px-3 font-semibold">ID</th>
+                    <th class="py-2.5 px-3 font-semibold">Customer</th>
+                    <th class="py-2.5 px-3 font-semibold">Shop</th>
+                    <th class="py-2.5 px-3 font-semibold">Method</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Amount</th>
+                    <th class="py-2.5 px-3 font-semibold text-right">Receipt</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-recent-purchases" class="divide-y divide-slate-100">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Quick Action & DBMS Feature Summary -->
+          <div class="space-y-6">
+            <div class="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl p-6 shadow-md relative overflow-hidden">
+              <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-indigo-500/10 rounded-full blur-xl pointer-events-none"></div>
+              <div class="flex items-center space-x-2 text-brand-300 text-xs font-semibold uppercase tracking-wider mb-2">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <span>DBMS Mini Project Highlights</span>
+              </div>
+              <h4 class="text-lg font-bold mb-2">20 Relational Entities</h4>
+              <p class="text-xs text-slate-300 leading-relaxed mb-4">
+                Full 3NF normalized schema with triggers for inventory auto-reduction, loyalty points computation, parking slot allocation, and 7 pre-computed analytical views.
+              </p>
+              <div class="grid grid-cols-2 gap-2 text-xs">
+                <div class="bg-white/10 p-2 rounded-lg backdrop-blur-sm">
+                  <span class="text-slate-400 block text-[10px]">Triggers Active</span>
+                  <span class="font-bold text-emerald-400">4 Automated</span>
+                </div>
+                <div class="bg-white/10 p-2 rounded-lg backdrop-blur-sm">
+                  <span class="text-slate-400 block text-[10px]">SQL Views</span>
+                  <span class="font-bold text-brand-300">7 Analytical</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Jump Shortcuts -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5">
+              <h4 class="font-bold text-slate-800 text-sm mb-3">Quick Workflows</h4>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button onclick="openModal('add-customer-modal')" class="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl text-left border border-slate-200 transition group">
+                  <i class="fa-solid fa-user-plus text-brand-600 mb-1 block"></i>
+                  <span class="text-xs font-semibold text-slate-800 block">Add Customer</span>
+                  <span class="text-[10px] text-slate-500">Register loyalty tier</span>
+                </button>
+                <button onclick="openModal('add-product-modal')" class="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl text-left border border-slate-200 transition group">
+                  <i class="fa-solid fa-box-open text-emerald-600 mb-1 block"></i>
+                  <span class="text-xs font-semibold text-slate-800 block">Add Product</span>
+                  <span class="text-[10px] text-slate-500">Update shop catalog</span>
+                </button>
+                <button onclick="openModal('complaint-modal')" class="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl text-left border border-slate-200 transition group">
+                  <i class="fa-solid fa-headset text-amber-600 mb-1 block"></i>
+                  <span class="text-xs font-semibold text-slate-800 block">Log Complaint</span>
+                  <span class="text-[10px] text-slate-500">Customer feedback</span>
+                </button>
+                <button onclick="openModal('maintenance-modal')" class="p-3 bg-slate-50 hover:bg-slate-100 rounded-xl text-left border border-slate-200 transition group">
+                  <i class="fa-solid fa-wrench text-blue-600 mb-1 block"></i>
+                  <span class="text-xs font-semibold text-slate-800 block">Maintenance</span>
+                  <span class="text-[10px] text-slate-500">Equipment repair</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- TAB 2: POINT OF SALE (POS) BILLING SIMULATOR -->
+      <!-- ============================================================== -->
+      <section id="tab-pos" class="tab-pane hidden space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Left Column: Shop & Product Selection -->
+          <div class="lg:col-span-7 space-y-4">
+            <!-- Shop Selector & Filter -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex-1">
+                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Select Active Shop Outlet</label>
+                <select id="pos-shop-select" onchange="onPosShopChange()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2.5 text-sm font-medium focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                  <!-- Loaded dynamically -->
+                </select>
+              </div>
+              <div>
+                <span id="pos-active-offer-tag" class="hidden text-xs bg-amber-50 text-amber-700 border border-amber-200 px-3 py-1.5 rounded-lg font-semibold flex items-center space-x-1.5">
+                  <i class="fa-solid fa-tag"></i>
+                  <span id="pos-active-offer-name">Promo</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Product Grid -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+              <div class="flex justify-between items-center mb-4">
+                <h3 class="font-bold text-slate-800 text-sm">Available Shop Inventory</h3>
+                <span id="pos-product-count" class="text-xs text-slate-500">0 items</span>
+              </div>
+              <div id="pos-products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-3.5 max-h-[460px] overflow-y-auto pr-1">
+                <!-- Products loaded via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Cart & Checkout Form -->
+          <div class="lg:col-span-5 bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
+                <h3 class="font-bold text-slate-800 text-base">Cart & Invoice Summary</h3>
+                <button onclick="clearPosCart()" class="text-xs text-rose-600 hover:text-rose-700 font-semibold">Clear Cart</button>
+              </div>
+
+              <!-- Customer Selector -->
+              <div class="mb-4">
+                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Customer / Member</label>
+                <div class="flex space-x-2">
+                  <select id="pos-customer-select" class="flex-1 bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    <!-- Populated via JS -->
+                  </select>
+                  <button onclick="openModal('add-customer-modal')" title="Quick Register Customer" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition">
+                    <i class="fa-solid fa-plus"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Cart Line Items -->
+              <div class="mb-4">
+                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Purchased Items</label>
+                <div id="pos-cart-items" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+                  <p class="text-xs text-slate-400 py-6 text-center italic">No items selected yet. Click products on the left to add.</p>
+                </div>
+              </div>
+
+              <!-- Offers Selection -->
+              <div class="mb-4">
+                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Promotional Discount Offer</label>
+                <select id="pos-offer-select" onchange="renderPosCart()" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                  <option value="">No Promotional Offer Applied</option>
+                  <!-- Populated based on shop -->
+                </select>
+              </div>
+
+              <!-- Payment Method Selection -->
+              <div class="mb-4">
+                <label class="block text-xs font-semibold uppercase text-slate-500 mb-1">Payment Method</label>
+                <div class="grid grid-cols-3 gap-2 text-xs">
+                  <label class="border border-slate-200 rounded-lg p-2 flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+                    <input type="radio" name="pos-payment-method" value="Cash" checked class="text-brand-600 focus:ring-brand-500">
+                    <span>Cash</span>
+                  </label>
+                  <label class="border border-slate-200 rounded-lg p-2 flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+                    <input type="radio" name="pos-payment-method" value="Credit Card" class="text-brand-600 focus:ring-brand-500">
+                    <span>Credit Card</span>
+                  </label>
+                  <label class="border border-slate-200 rounded-lg p-2 flex items-center space-x-2 cursor-pointer hover:bg-slate-50">
+                    <input type="radio" name="pos-payment-method" value="UPI" class="text-brand-600 focus:ring-brand-500">
+                    <span>UPI</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Price Breakdown & Checkout Button -->
+            <div class="border-t border-slate-100 pt-4 space-y-2">
+              <div class="flex justify-between text-xs text-slate-500">
+                <span>Subtotal:</span>
+                <span id="pos-subtotal" class="font-mono font-medium">$0.00</span>
+              </div>
+              <div class="flex justify-between text-xs text-emerald-600">
+                <span>Discount:</span>
+                <span id="pos-discount" class="font-mono font-medium">-$0.00</span>
+              </div>
+              <div class="flex justify-between text-base font-bold text-slate-900 border-t border-slate-100 pt-2">
+                <span>Total Payable:</span>
+                <span id="pos-total" class="font-mono text-brand-600">$0.00</span>
+              </div>
+
+              <button onclick="submitPosCheckout()" id="pos-checkout-btn" class="w-full mt-4 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold shadow-lg shadow-brand-500/25 transition flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-receipt"></i>
+                <span>Complete Transaction & Print Receipt</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- TAB 3: SHOPS & LEASES -->
+      <!-- ============================================================== -->
+      <section id="tab-shops" class="tab-pane hidden space-y-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">Mall Shops & Tenant Directory</h3>
+            <p class="text-xs text-slate-500">Manage shop locations, tenant lease agreements, and category allocation</p>
+          </div>
+          <button onclick="openModal('add-shop-modal')" class="px-3.5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+            <i class="fa-solid fa-plus"></i>
+            <span>Add New Shop & Lease</span>
+          </button>
+        </div>
+
+        <!-- Floor Filter Badges -->
+        <div class="flex space-x-2 overflow-x-auto pb-1">
+          <button onclick="filterShopsByFloor('all')" class="floor-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white">All Floors</button>
+          <button onclick="filterShopsByFloor('Ground Floor')" class="floor-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600">Ground Floor</button>
+          <button onclick="filterShopsByFloor('1st Floor')" class="floor-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600">1st Floor</button>
+          <button onclick="filterShopsByFloor('2nd Floor')" class="floor-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600">2nd Floor</button>
+          <button onclick="filterShopsByFloor('3rd Floor')" class="floor-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600">3rd Floor</button>
+          <button onclick="filterShopsByFloor('Basement B1')" class="floor-filter-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600">Basement B1</button>
+        </div>
+
+        <!-- Shops Grid Cards -->
+        <div id="shops-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Loaded via JS -->
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- TAB 4: INVENTORY & PRODUCTS -->
+      <!-- ============================================================== -->
+      <section id="tab-products" class="tab-pane hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">Mall Products Catalog & Inventory</h3>
+            <p class="text-xs text-slate-500">Track stock levels, price points, and promotional discounts across all stores</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="openModal('add-product-modal')" class="px-3.5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+              <i class="fa-solid fa-plus"></i>
+              <span>Add Product</span>
+            </button>
+            <button onclick="openModal('add-offer-modal')" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+              <i class="fa-solid fa-tags"></i>
+              <span>New Offer</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row gap-3">
+          <input type="text" id="product-search-input" onkeyup="filterProductsTable()" placeholder="Search product name or category..." class="flex-1 bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <select id="product-shop-filter" onchange="filterProductsTable()" class="bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <option value="all">All Shops</option>
+            <!-- Populated via JS -->
+          </select>
+        </div>
+
+        <!-- Products Table -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 text-xs font-semibold uppercase text-slate-500 border-b border-slate-200">
+                <tr>
+                  <th class="py-3 px-4">Product Name</th>
+                  <th class="py-3 px-4">Shop</th>
+                  <th class="py-3 px-4">Category</th>
+                  <th class="py-3 px-4 text-right">Price</th>
+                  <th class="py-3 px-4 text-center">Stock Quantity</th>
+                  <th class="py-3 px-4 text-center">Stock Status</th>
+                  <th class="py-3 px-4 text-right">Quick Stock Update</th>
+                </tr>
+              </thead>
+              <tbody id="products-table-body" class="divide-y divide-slate-100">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- TAB 5: CUSTOMER & LOYALTY -->
+      <!-- ============================================================== -->
+      <section id="tab-customers" class="tab-pane hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">Customer Management & Loyalty System</h3>
+            <p class="text-xs text-slate-500">Silver, Gold, Platinum tiers automatically managed via database triggers</p>
+          </div>
+          <button onclick="openModal('add-customer-modal')" class="px-3.5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Register New Customer</span>
+          </button>
+        </div>
+
+        <!-- Customers Table -->
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-50 text-xs font-semibold uppercase text-slate-500 border-b border-slate-200">
+                <tr>
+                  <th class="py-3 px-4">Customer Details</th>
+                  <th class="py-3 px-4">Contact</th>
+                  <th class="py-3 px-4">Membership Tier</th>
+                  <th class="py-3 px-4 text-center">Loyalty Points</th>
+                  <th class="py-3 px-4 text-center">Orders</th>
+                  <th class="py-3 px-4 text-right">Lifetime Spend</th>
+                  <th class="py-3 px-4 text-center">Status</th>
+                  <th class="py-3 px-4 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="customers-table-body" class="divide-y divide-slate-100">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- TAB 6: SMART PARKING -->
+      <!-- ============================================================== -->
+      <section id="tab-parking" class="tab-pane hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">Smart Parking Management</h3>
+            <p class="text-xs text-slate-500">Real-time basement bay visualizer across B1, B2, and B3 levels</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="openModal('parking-entry-modal')" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+              <i class="fa-solid fa-car-side"></i>
+              <span>Vehicle Check-In</span>
+            </button>
+            <button onclick="openModal('parking-exit-modal')" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+              <i class="fa-solid fa-receipt"></i>
+              <span>Check-Out & Settle Fee</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Floor Switcher & Legend -->
+        <div class="bg-white p-4 rounded-xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row justify-between items-center gap-4">
+          <div class="flex space-x-2">
+            <button onclick="switchParkingFloor('all')" id="btn-parking-all" class="parking-floor-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white">All Basements</button>
+            <button onclick="switchParkingFloor('B1')" id="btn-parking-B1" class="parking-floor-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600">Basement B1 (VIP & 4W)</button>
+            <button onclick="switchParkingFloor('B2')" id="btn-parking-B2" class="parking-floor-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600">Basement B2 (General & 2W)</button>
+            <button onclick="switchParkingFloor('B3')" id="btn-parking-B3" class="parking-floor-btn px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-600">Basement B3 (EV & Overflow)</button>
+          </div>
+
+          <div class="flex items-center space-x-4 text-xs font-medium">
+            <div class="flex items-center space-x-1.5">
+              <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              <span>Available</span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+              <span>Occupied</span>
+            </div>
+            <div class="flex items-center space-x-1.5">
+              <span class="w-3 h-3 rounded-full bg-amber-500"></span>
+              <span>Reserved</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interactive 2D Parking Slots Grid -->
+        <div id="parking-slots-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+          <!-- Loaded via JS -->
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- TAB 7: MALL EVENTS -->
+      <!-- ============================================================== -->
+      <section id="tab-events" class="tab-pane hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">Mall Events & Registrations</h3>
+            <p class="text-xs text-slate-500">Track event capacity, customer RSVPs, and attendance status</p>
+          </div>
+          <button onclick="openModal('add-event-modal')" class="px-3.5 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+            <i class="fa-solid fa-calendar-plus"></i>
+            <span>Create New Event</span>
+          </button>
+        </div>
+
+        <!-- Events Grid -->
+        <div id="events-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- Loaded via JS -->
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- TAB 8: COMPLAINTS & MAINTENANCE -->
+      <!-- ============================================================== -->
+      <section id="tab-support" class="tab-pane hidden space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-800">Customer Complaints & Maintenance Operations</h3>
+            <p class="text-xs text-slate-500">Track service tickets, technician assignments, and issue resolution workflows</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="openModal('complaint-modal')" class="px-3.5 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+              <i class="fa-solid fa-headset"></i>
+              <span>Log Complaint</span>
+            </button>
+            <button onclick="openModal('maintenance-modal')" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-semibold shadow-sm transition flex items-center space-x-2">
+              <i class="fa-solid fa-screwdriver-wrench"></i>
+              <span>New Work Order</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Split View: Complaints on left, Maintenance on right -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Complaints Section -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-comment-dots text-amber-500"></i>
+                <h4 class="font-bold text-slate-800 text-sm">Customer Complaints</h4>
+              </div>
+              <span id="complaints-count-badge" class="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full font-semibold">0</span>
+            </div>
+            <div id="complaints-list" class="space-y-3 max-h-[550px] overflow-y-auto pr-1">
+              <!-- Loaded via JS -->
+            </div>
+          </div>
+
+          <!-- Maintenance Section -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-4">
+            <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+              <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-wrench text-blue-500"></i>
+                <h4 class="font-bold text-slate-800 text-sm">Facility Maintenance Requests</h4>
+              </div>
+              <span id="maintenance-count-badge" class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold">0</span>
+            </div>
+            <div id="maintenance-list" class="space-y-3 max-h-[550px] overflow-y-auto pr-1">
+              <!-- Loaded via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- TAB 9: 10 DBMS ANALYTICAL REPORTS (CASE STUDY SPEC) -->
+      <!-- ============================================================== -->
+      <section id="tab-analytics" class="tab-pane hidden space-y-6">
+        <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <div class="flex items-center space-x-2 text-brand-600 text-xs font-bold uppercase tracking-wider mb-1">
+              <i class="fa-solid fa-database"></i>
+              <span>Section H: Reporting & Analytics</span>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">10 DBMS Analytical Queries & Visualizations</h3>
+            <p class="text-xs text-slate-500">Pre-computed complex SQL aggregations, joins, and group by queries specified in the project requirements.</p>
+          </div>
+          <button onclick="loadAnalyticsData()" class="px-3.5 py-2 bg-indigo-50 hover:bg-indigo-100 text-brand-700 border border-brand-200 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5">
+            <i class="fa-solid fa-arrows-rotate"></i>
+            <span>Refresh Analytics</span>
+          </button>
+        </div>
+
+        <!-- 10 Charts & Data Grids -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Report 1: Total Sales by Shop -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">1. Total Sales by Shop</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">SUM(total_amount) GROUP BY shop</span>
+            </div>
+            <div class="h-64">
+              <canvas id="chart-sales-shop"></canvas>
+            </div>
+          </div>
+
+          <!-- Report 2: Popular Product Categories -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">2. Popular Product Categories</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">SUM(quantity) GROUP BY category</span>
+            </div>
+            <div class="h-64 flex items-center justify-center">
+              <canvas id="chart-popular-categories"></canvas>
+            </div>
+          </div>
+
+          <!-- Report 3: Customer Purchase Patterns -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">3. Customer Purchase Patterns</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">AVG(spent) by Membership Tier</span>
+            </div>
+            <div class="h-64">
+              <canvas id="chart-customer-patterns"></canvas>
+            </div>
+          </div>
+
+          <!-- Report 4: Parking Peak Hours & Usage -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">4. Parking Usage & Peak Hours</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">COUNT(entry_id) by Hour</span>
+            </div>
+            <div class="h-64">
+              <canvas id="chart-parking-peak"></canvas>
+            </div>
+          </div>
+
+          <!-- Report 5: Event Registrations vs Attendance -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">5. Event Registrations vs Capacity</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Registered vs Capacity Utilization</span>
+            </div>
+            <div class="h-64">
+              <canvas id="chart-events-attendance"></canvas>
+            </div>
+          </div>
+
+          <!-- Report 6: Common Complaints Breakdown -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">6. Common Complaint Categories</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Resolved vs Pending Tickets</span>
+            </div>
+            <div class="h-64 flex items-center justify-center">
+              <canvas id="chart-complaints-type"></canvas>
+            </div>
+          </div>
+
+          <!-- Report 7: Maintenance Workload -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">7. Pending Maintenance by Issue Type</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Escalator, HVAC, Electrical</span>
+            </div>
+            <div class="h-64">
+              <canvas id="chart-maintenance-issues"></canvas>
+            </div>
+          </div>
+
+          <!-- Report 8: Active & Expired Leases -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">8. Active, Renewal & Expired Leases</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Monthly Rent Roll by Status</span>
+            </div>
+            <div class="h-64 flex items-center justify-center">
+              <canvas id="chart-lease-status"></canvas>
+            </div>
+          </div>
+
+          <!-- Report 9: Payment Method Usage -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">9. Payment Method Usage Share</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Cash, Credit Card, UPI, Debit Card</span>
+            </div>
+            <div class="h-64 flex items-center justify-center">
+              <canvas id="chart-payment-methods"></canvas>
+            </div>
+          </div>
+
+          <!-- Report 10: Returning Customers Analysis -->
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">10. Returning vs First-Time Customers</h4>
+              <span class="text-[11px] font-mono bg-slate-100 text-slate-600 px-2 py-0.5 rounded">LTV & Retention Rate Analysis</span>
+            </div>
+            <div class="h-64 flex items-center justify-center">
+              <canvas id="chart-returning-customers"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============================================================== -->
+      <!-- TAB 10: DBMS SQL CONSOLE & ER DIAGRAM -->
+      <!-- ============================================================== -->
+      <section id="tab-sql-studio" class="tab-pane hidden space-y-6">
+        <!-- Sub-tabs for SQL Console vs ER Diagram vs Downloads -->
+        <div class="flex border-b border-slate-200 space-x-6">
+          <button onclick="switchSqlSubTab('console')" id="subtab-btn-console" class="pb-3 text-sm font-bold border-b-2 border-brand-600 text-brand-600">Interactive SQL Console</button>
+          <button onclick="switchSqlSubTab('er-diagram')" id="subtab-btn-er-diagram" class="pb-3 text-sm font-semibold text-slate-500 hover:text-slate-700">ER Diagram Viewer</button>
+          <button onclick="switchSqlSubTab('schema-browser')" id="subtab-btn-schema-browser" class="pb-3 text-sm font-semibold text-slate-500 hover:text-slate-700">Schema & Triggers Inspector</button>
+          <button onclick="switchSqlSubTab('downloads')" id="subtab-btn-downloads" class="pb-3 text-sm font-semibold text-slate-500 hover:text-slate-700">Download SQL Scripts</button>
+        </div>
+
+        <!-- View A: SQL Console -->
+        <div id="subtab-view-console" class="space-y-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+            <div class="flex justify-between items-center">
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">SQL Query Editor</label>
+              <div class="flex items-center space-x-2">
+                <button onclick="runConsoleQuery(true)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition">
+                  <i class="fa-solid fa-sitemap mr-1"></i> Explain Plan
+                </button>
+                <button onclick="runConsoleQuery(false)" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-bold shadow-sm transition flex items-center space-x-1.5">
+                  <i class="fa-solid fa-play"></i>
+                  <span>Execute SQL</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- SQL Textarea -->
+            <textarea id="sql-console-input" rows="4" class="w-full font-mono text-sm bg-slate-900 text-emerald-400 p-4 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500 leading-relaxed" placeholder="Type standard ANSI SQL query here... e.g. SELECT * FROM vw_shop_sales;"></textarea>
+
+            <!-- Sample Query Buttons for DBMS Viva -->
+            <div>
+              <p class="text-[11px] font-semibold text-slate-500 uppercase tracking-wider mb-2">Preset DBMS Queries for Demonstration:</p>
+              <div class="flex flex-wrap gap-2 text-xs">
+                <button onclick="loadSampleQuery(1)" class="px-2.5 py-1 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 border border-slate-200 rounded-md transition font-medium">Join: Shop & Revenue</button>
+                <button onclick="loadSampleQuery(2)" class="px-2.5 py-1 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 border border-slate-200 rounded-md transition font-medium">Group By & Having: Loyal Customers</button>
+                <button onclick="loadSampleQuery(3)" class="px-2.5 py-1 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 border border-slate-200 rounded-md transition font-medium">Nested Subquery: Top Spender</button>
+                <button onclick="loadSampleQuery(4)" class="px-2.5 py-1 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 border border-slate-200 rounded-md transition font-medium">Parking Status View</button>
+                <button onclick="loadSampleQuery(5)" class="px-2.5 py-1 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 border border-slate-200 rounded-md transition font-medium">Unresolved Complaints View</button>
+                <button onclick="loadSampleQuery(6)" class="px-2.5 py-1 bg-slate-100 hover:bg-brand-50 hover:text-brand-700 border border-slate-200 rounded-md transition font-medium">Test Inventory Trigger</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Query Execution Result Card -->
+          <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 space-y-3">
+            <div class="flex justify-between items-center">
+              <h4 class="font-bold text-slate-800 text-sm">Query Results</h4>
+              <div id="query-meta-info" class="text-xs text-slate-500 font-mono">Ready to execute</div>
+            </div>
+            <div id="query-results-container" class="overflow-x-auto max-h-96">
+              <p class="text-xs text-slate-400 py-6 text-center italic">Run a query above or click a preset to view table results.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- View B: ER Diagram Viewer -->
+        <div id="subtab-view-er-diagram" class="hidden space-y-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div class="flex justify-between items-center mb-4">
+              <div>
+                <h4 class="font-bold text-slate-800 text-base">Entity Relationship (ER) Diagram</h4>
+                <p class="text-xs text-slate-500">Shows all 20 entities, primary keys (PK underlined), foreign keys (FK italicized), and crow's foot cardinalities.</p>
+              </div>
+              <a href="/static/er_diagram.jpg" target="_blank" class="px-3.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-up-right-from-square"></i>
+                <span>Open Full Size Image</span>
+              </a>
+            </div>
+            <div class="bg-slate-900 rounded-xl p-4 flex items-center justify-center overflow-auto max-h-[700px]">
+              <img src="/static/er_diagram.jpg" alt="Mall Management System ER Diagram" class="max-w-full h-auto rounded shadow-lg">
+            </div>
+          </div>
+        </div>
+
+        <!-- View C: Schema & Triggers Inspector -->
+        <div id="subtab-view-schema-browser" class="hidden space-y-4">
+          <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+            <h4 class="font-bold text-slate-800 text-base">Database Tables & Columns Schema</h4>
+            <div id="schema-tables-accordion" class="space-y-2">
+              <!-- Loaded via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- View D: Download Scripts -->
+        <div id="subtab-view-downloads" class="hidden space-y-4">
+          <div class="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+            <div class="flex justify-between items-center">
+              <div>
+                <h4 class="font-bold text-slate-800 text-base">Modular DBMS SQL Scripts Repository</h4>
+                <p class="text-xs text-slate-500">Every script is standalone, formatted with syntax highlighting and ANSI SQL standards for project submissions.</p>
+              </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
+              <div class="border border-slate-200 rounded-xl p-4 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 text-brand-600 font-bold text-sm">
+                    <i class="fa-solid fa-table"></i>
+                    <span>01_ddl_tables.sql</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">20 Relational Tables with PK, FK constraints, and indexes.</p>
+                </div>
+                <a href="/api/download/01_ddl_tables_and_constraints.sql" download class="w-full text-center py-1.5 bg-brand-50 hover:bg-brand-100 text-brand-700 rounded-lg text-xs font-semibold">Download DDL</a>
+              </div>
+
+              <div class="border border-slate-200 rounded-xl p-4 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 text-amber-600 font-bold text-sm">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span>02_triggers.sql</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">4 Active Triggers: Stock auto-deduct, loyalty tier upgrades & parking states.</p>
+                </div>
+                <a href="/api/download/02_triggers.sql" download class="w-full text-center py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-lg text-xs font-semibold">Download Triggers</a>
+              </div>
+
+              <div class="border border-slate-200 rounded-xl p-4 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 text-indigo-600 font-bold text-sm">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>03_views.sql</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">7 Pre-computed Views for sales, parking, lease status & complaints.</p>
+                </div>
+                <a href="/api/download/03_views.sql" download class="w-full text-center py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-semibold">Download Views</a>
+              </div>
+
+              <div class="border border-slate-200 rounded-xl p-4 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 text-rose-600 font-bold text-sm">
+                    <i class="fa-solid fa-gears"></i>
+                    <span>04_procedures.sql</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">Stored Procedures with Transaction Control (BEGIN, COMMIT, ROLLBACK).</p>
+                </div>
+                <a href="/api/download/04_stored_procedures.sql" download class="w-full text-center py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg text-xs font-semibold">Download Procedures</a>
+              </div>
+
+              <div class="border border-slate-200 rounded-xl p-4 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 text-emerald-600 font-bold text-sm">
+                    <i class="fa-solid fa-database"></i>
+                    <span>05_dml_seed.sql</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">50+ realistic insert statements across all 20 relational entities.</p>
+                </div>
+                <a href="/api/download/05_dml_seed_data.sql" download class="w-full text-center py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-lg text-xs font-semibold">Download DML Seed</a>
+              </div>
+
+              <div class="border border-slate-200 rounded-xl p-4 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 text-blue-600 font-bold text-sm">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>06_analytics.sql</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">The 10 Required Project Analytical SQL Queries with full documentation.</p>
+                </div>
+                <a href="/api/download/06_10_analytics_queries.sql" download class="w-full text-center py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded-lg text-xs font-semibold">Download Analytics</a>
+              </div>
+
+              <div class="border border-slate-200 rounded-xl p-4 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 text-cyan-600 font-bold text-sm">
+                    <i class="fa-solid fa-server"></i>
+                    <span>07_postgresql.sql</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">PostgreSQL 18 complete script with SERIAL types and PL/pgSQL triggers.</p>
+                </div>
+                <a href="/api/download/07_postgresql_complete.sql" download class="w-full text-center py-1.5 bg-cyan-50 hover:bg-cyan-100 text-cyan-700 rounded-lg text-xs font-semibold">Download PostgreSQL</a>
+              </div>
+
+              <div class="border border-slate-200 rounded-xl p-4 space-y-2 flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center space-x-2 text-teal-600 font-bold text-sm">
+                    <i class="fa-solid fa-cubes"></i>
+                    <span>08_mysql.sql</span>
+                  </div>
+                  <p class="text-xs text-slate-500 mt-1">MySQL 8.0+ drop-in script with AUTO_INCREMENT and DELIMITER syntax.</p>
+                </div>
+                <a href="/api/download/08_mysql_complete.sql" download class="w-full text-center py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg text-xs font-semibold">Download MySQL</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================================================================== -->
+  <!-- MODALS -->
+  <!-- ==================================================================== -->
+
+  <!-- Modal 1: Register Customer -->
+  <div id="add-customer-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Register New Customer</h3>
+        <button onclick="closeModal('add-customer-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <form onsubmit="handleCustomerSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Full Name *</label>
+          <input type="text" id="cust-name" required placeholder="e.g. Rahul Sharma" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Phone Number *</label>
+          <input type="text" id="cust-phone" required placeholder="e.g. +91 98200 12345" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Email Address</label>
+          <input type="email" id="cust-email" placeholder="rahul@example.com" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Membership Plan</label>
+          <select id="cust-membership" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <option value="Regular">Regular Member</option>
+            <option value="Silver">Silver Tier</option>
+            <option value="Gold">Gold Tier</option>
+            <option value="Platinum">Platinum VIP Tier</option>
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('add-customer-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-bold">Register Customer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Add Shop -->
+  <div id="add-shop-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Add New Shop & Lease Agreement</h3>
+        <button onclick="closeModal('add-shop-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <form onsubmit="handleShopSubmit(event)" class="space-y-3">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Shop Name *</label>
+            <input type="text" id="shop-name" required placeholder="e.g. Uniqlo Mega Store" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Category *</label>
+            <select id="shop-category" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+              <option value="Fashion & Apparel">Fashion & Apparel</option>
+              <option value="Electronics & Gadgets">Electronics & Gadgets</option>
+              <option value="Food & Dining">Food & Dining</option>
+              <option value="Entertainment">Entertainment</option>
+              <option value="Beauty & Cosmetics">Beauty & Cosmetics</option>
+              <option value="Footwear & Sportswear">Footwear & Sportswear</option>
+              <option value="Supermarket & Groceries">Supermarket & Groceries</option>
+              <option value="Books & Stationery">Books & Stationery</option>
+            </select>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Mall Floor *</label>
+            <select id="shop-floor" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+              <option value="Ground Floor">Ground Floor</option>
+              <option value="1st Floor">1st Floor</option>
+              <option value="2nd Floor">2nd Floor</option>
+              <option value="3rd Floor">3rd Floor</option>
+              <option value="Basement B1">Basement B1</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Shop Contact Phone</label>
+            <input type="text" id="shop-contact" placeholder="+91 22 5500 1234" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+        </div>
+        <div class="border-t border-slate-100 pt-3">
+          <p class="text-xs font-bold text-slate-700 uppercase mb-2">Tenant & Lease Details</p>
+          <div class="grid grid-cols-2 gap-3 mb-2">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Tenant Entity Name</label>
+              <input type="text" id="tenant-name" placeholder="e.g. Fast Retailing India" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Monthly Rent ($ / ₹)</label>
+              <input type="number" id="monthly-rent" step="100" value="8500" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('add-shop-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-bold">Create Shop</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Add Product -->
+  <div id="add-product-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Add Product to Inventory</h3>
+        <button onclick="closeModal('add-product-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <form onsubmit="handleProductSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Select Shop *</label>
+          <select id="prod-shop-id" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <!-- Populated dynamically -->
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Product Name *</label>
+          <input type="text" id="prod-name" required placeholder="e.g. Wireless Noise-Cancelling Headphones" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Category *</label>
+            <input type="text" id="prod-category" required placeholder="e.g. Electronics" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Unit Price ($) *</label>
+            <input type="number" id="prod-price" required step="0.01" min="0.5" placeholder="199.99" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Stock Quantity</label>
+          <input type="number" id="prod-stock" min="1" value="25" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('add-product-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-bold">Add Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 4: Add Offer -->
+  <div id="add-offer-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Create Promotional Discount Offer</h3>
+        <button onclick="closeModal('add-offer-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <form onsubmit="handleOfferSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Select Shop *</label>
+          <select id="offer-shop-id" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Offer Title / Campaign *</label>
+          <input type="text" id="offer-name" required placeholder="e.g. Festive Super Sale" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Discount Percentage (%) *</label>
+          <input type="number" id="offer-pct" required min="1" max="90" step="1" value="15" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Start Date</label>
+            <input type="date" id="offer-start" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">End Date</label>
+            <input type="date" id="offer-end" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('add-offer-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Publish Offer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 5: Parking Check-In -->
+  <div id="parking-entry-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Vehicle Entry Check-In</h3>
+        <button onclick="closeModal('parking-entry-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <form onsubmit="handleParkingEntrySubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Vehicle Plate Number *</label>
+          <input type="text" id="park-veh-num" required placeholder="e.g. MH-01-AZ-9999" class="w-full font-mono uppercase bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Vehicle Classification *</label>
+          <select id="park-veh-type" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <option value="4-Wheeler">4-Wheeler (Car / SUV) - $5/hr</option>
+            <option value="2-Wheeler">2-Wheeler (Bike / Scooter) - $2/hr</option>
+            <option value="EV">Electric Vehicle (EV Charging) - $4/hr</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Registered Customer (Optional)</label>
+          <select id="park-cust-id" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <option value="">Guest Visitor / Walk-in</option>
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <p class="text-[11px] text-slate-500 italic">Database trigger will auto-assign best bay and mark slot status to 'Occupied'.</p>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('parking-entry-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold">Assign Bay & Enter</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 6: Parking Check-Out & Settle Fee -->
+  <div id="parking-exit-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Vehicle Exit & Fee Settlement</h3>
+        <button onclick="closeModal('parking-exit-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <form onsubmit="handleParkingExitSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Select Parked Vehicle or Enter Plate *</label>
+          <select id="park-exit-select" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <!-- Active entries populated via JS -->
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('parking-exit-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold">Calculate Fee & Free Bay</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 7: Log Complaint -->
+  <div id="complaint-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Log Customer Complaint</h3>
+        <button onclick="closeModal('complaint-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <form onsubmit="handleComplaintSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Customer *</label>
+          <select id="comp-customer-id" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Category *</label>
+            <select id="comp-type" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+              <option value="Cleanliness">Cleanliness</option>
+              <option value="Facilities">Facilities</option>
+              <option value="Parking">Parking</option>
+              <option value="Staff Behavior">Staff Behavior</option>
+              <option value="Noise">Noise</option>
+              <option value="Security">Security</option>
+              <option value="Billing">Billing</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Priority</label>
+            <select id="comp-priority" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+              <option value="Low">Low</option>
+              <option value="Medium" selected>Medium</option>
+              <option value="High">High</option>
+              <option value="Urgent">Urgent</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Issue Description *</label>
+          <textarea id="comp-desc" required rows="3" placeholder="Provide detailed issue description..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('complaint-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg text-xs font-bold">Submit Complaint</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 8: Maintenance Work Order -->
+  <div id="maintenance-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">New Maintenance Request</h3>
+        <button onclick="closeModal('maintenance-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <form onsubmit="handleMaintenanceSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Issue Classification *</label>
+          <select id="maint-type" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <option value="Electrical">Electrical</option>
+            <option value="HVAC / AC">HVAC / Air Conditioning</option>
+            <option value="Plumbing">Plumbing & Drainage</option>
+            <option value="Escalator / Elevator">Escalator / Elevator</option>
+            <option value="Lighting">Mall Lighting</option>
+            <option value="Cleaning & Sanitation">Cleaning & Sanitation</option>
+            <option value="Structural">Structural & Fixtures</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Description & Location *</label>
+          <textarea id="maint-desc" required rows="3" placeholder="Location, equipment code, observed failure..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Reported by Customer (Optional)</label>
+          <select id="maint-cust-id" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <option value="">Mall Staff Internal Inspection</option>
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('maintenance-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg text-xs font-bold">Issue Work Order</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 9: Add Event -->
+  <div id="add-event-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Schedule New Mall Event</h3>
+        <button onclick="closeModal('add-event-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <form onsubmit="handleEventSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Event Title *</label>
+          <input type="text" id="event-name" required placeholder="e.g. Winter Gaming Fest 2026" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Event Date *</label>
+            <input type="date" id="event-date" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Max Capacity *</label>
+            <input type="number" id="event-capacity" required min="10" value="150" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Start Time</label>
+            <input type="time" id="event-start" required value="11:00" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">End Time</label>
+            <input type="time" id="event-end" required value="19:00" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Location / Venue *</label>
+          <input type="text" id="event-location" required placeholder="Central Atrium, Level 1 Plaza, etc." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+        </div>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('add-event-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-bold">Publish Event</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 10: Event RSVP Registration -->
+  <div id="event-rsvp-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Register Customer for Event</h3>
+        <button onclick="closeModal('event-rsvp-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <input type="hidden" id="rsvp-event-id">
+      <p id="rsvp-event-title" class="text-xs font-semibold text-brand-600"></p>
+      <form onsubmit="handleEventRsvpSubmit(event)" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Select Customer *</label>
+          <select id="rsvp-customer-id" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+            <!-- Populated via JS -->
+          </select>
+        </div>
+        <div class="flex justify-end space-x-2 pt-3">
+          <button type="button" onclick="closeModal('event-rsvp-modal')" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-xs font-semibold">Cancel</button>
+          <button type="submit" class="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-lg text-xs font-bold">Confirm Registration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 11: Printable Purchase Receipt -->
+  <div id="receipt-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-lg shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3 no-print">
+        <h3 class="font-bold text-slate-800 text-base">Purchase Receipt</h3>
+        <div class="flex items-center space-x-2">
+          <button onclick="window.print()" class="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold">
+            <i class="fa-solid fa-print mr-1"></i> Print
+          </button>
+          <button onclick="closeModal('receipt-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+        </div>
+      </div>
+
+      <!-- Receipt Content -->
+      <div id="printable-receipt" class="p-4 bg-white border border-slate-200 rounded-xl space-y-4">
+        <!-- Receipt Header -->
+        <div class="text-center border-b border-dashed border-slate-300 pb-3">
+          <h2 class="font-black text-xl tracking-wider text-slate-900">NEXUS MALL</h2>
+          <p id="rcpt-shop-name" class="font-bold text-sm text-slate-700 mt-1">Shop Outlet</p>
+          <p id="rcpt-shop-floor" class="text-xs text-slate-500">Floor Location</p>
+          <p class="text-[10px] text-slate-400 font-mono mt-1">Receipt ID: #<span id="rcpt-id">000</span> | <span id="rcpt-date">Timestamp</span></p>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="text-xs text-slate-600 flex justify-between border-b border-dashed border-slate-300 pb-2">
+          <div>
+            <span class="text-slate-400 block text-[10px]">Customer</span>
+            <span id="rcpt-cust-name" class="font-semibold text-slate-800">Customer Name</span>
+          </div>
+          <div class="text-right">
+            <span class="text-slate-400 block text-[10px]">Payment Method</span>
+            <span id="rcpt-payment-method" class="font-semibold text-slate-800">Cash</span>
+          </div>
+        </div>
+
+        <!-- Items Table -->
+        <table class="w-full text-xs text-left">
+          <thead>
+            <tr class="border-b border-slate-200 font-semibold text-slate-500">
+              <th class="py-1">Item</th>
+              <th class="py-1 text-center">Qty</th>
+              <th class="py-1 text-right">Price</th>
+              <th class="py-1 text-right">Total</th>
+            </tr>
+          </thead>
+          <tbody id="rcpt-items-body" class="divide-y divide-slate-100 font-mono">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+
+        <!-- Totals -->
+        <div class="border-t border-dashed border-slate-300 pt-2 space-y-1 text-xs">
+          <div id="rcpt-discount-row" class="flex justify-between text-emerald-600 hidden">
+            <span>Promotional Discount:</span>
+            <span id="rcpt-discount" class="font-mono">-$0.00</span>
+          </div>
+          <div class="flex justify-between text-sm font-bold text-slate-900 border-t border-slate-200 pt-1">
+            <span>Total Paid:</span>
+            <span id="rcpt-total" class="font-mono text-base">$0.00</span>
+          </div>
+        </div>
+
+        <div class="text-center pt-2 text-[10px] text-slate-400 border-t border-dashed border-slate-200">
+          <p>Thank you for shopping at Nexus Mall!</p>
+          <p>DBMS Mini Project Demonstration</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 12: Customer Full Profile Drawer -->
+  <div id="customer-profile-modal" class="modal fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-2xl shadow-2xl space-y-4 max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <h3 class="font-bold text-slate-800 text-base">Customer Profile & Activity Ledger</h3>
+        <button onclick="closeModal('customer-profile-modal')" class="text-slate-400 hover:text-slate-600">&times;</button>
+      </div>
+      <div id="customer-profile-content" class="space-y-4">
+        <!-- Loaded via JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 13: Live SQL Query Activity Monitor -->
+  <div id="sql-tracer-modal" class="modal fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 w-full max-w-4xl shadow-2xl space-y-4 max-h-[85vh] flex flex-col">
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3 flex-shrink-0">
+        <div class="flex items-center space-x-2.5">
+          <span class="w-3 h-3 rounded-full bg-emerald-500 live-pulse"></span>
+          <h3 class="font-bold text-slate-900 text-base">Backend SQL Execution Tracer</h3>
+          <span id="sql-tracer-engine-badge" class="text-[11px] bg-slate-100 font-mono text-slate-700 px-2 py-0.5 rounded-full font-bold">SQL Engine: Active</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="fetchSqlLogs()" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold">
+            <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh
+          </button>
+          <button onclick="closeModal('sql-tracer-modal')" class="text-slate-400 hover:text-slate-600 text-lg">&times;</button>
+        </div>
+      </div>
+      <p class="text-xs text-slate-500 flex-shrink-0">Live stream of raw SQL statements executed by backend routes (Transactions, DML, DQL, and Views). Ideal for DBMS professors during project examination.</p>
+      
+      <div id="sql-tracer-list" class="flex-1 overflow-y-auto space-y-2 pr-1 font-mono text-xs">
+        <!-- Loaded dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2 pointer-events-none"></div>
+
+  <!-- Main JS Logic -->
+  <script src="/static/js/main.js"></script>
+</body>
+</html>
